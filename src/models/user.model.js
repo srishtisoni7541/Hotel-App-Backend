@@ -40,7 +40,7 @@ userSchema.methods.generateAuthToken=function(){
     return token;
 };
 
-userSchema.statics.authenticate=async function(){
+userSchema.statics.authenticate=async function(email,password){
     const user=await this.findOne({email}).select("+password");
     if(!user){
         throw new Error("Invalid email or password!");

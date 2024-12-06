@@ -1,15 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const connect = require("./src/db/db");
+const connect = require("./src/db/db.js");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const cors = require("cors");
-const errorHandler = require("./src/middlewares/errorHandler"); // Fix the path if needed
+const { errorHandler } = require("./src/middlewares/errorHandler");
 const PORT = process.env.PORT || 3000;
+const userRouter = require("./src/routes/user.route.js")
 
-// Connect to database
 connect();
-
 const app = express();
 
 // Middlewares
@@ -18,35 +17,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("tiny"));
 
-// Setup CORS
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
 
-// Example Routes (Add your routes here)
-app.get("/", (req, res) => {
-  res.send("API is running!");
-});
+// Setup cors
+app.use(cors({
+    origin:true,
+    credential:true,
+}))
 
-// Handle 404 errors for unknown routes
-app.use("*", (req, res, next) => {
-  const error = new Error("Route Not Found");
-  error.status = 404;
-  next(error);
-});
 
-// Global error handler (Ensure this exports a middleware function)
-app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-  res.status(statusCode).json({
-    error: err.message || "Internal Server Error",
-  });
-});
+// Routes 
+app.use("/api/users",userRouter)
 
-// Start the server
+
+
+
+
+
+app.use("*",(req,res,next)=>{
+    const error = new Error("Route Not Found");
+    error.status = 404;
+    next(error);
+})
+
+// Global error handler
+app.use(errorHandler);
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}`);
 });
