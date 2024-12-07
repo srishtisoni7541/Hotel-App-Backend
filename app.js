@@ -7,6 +7,7 @@ const cors = require("cors");
 const { errorHandler } = require("./src/middlewares/errorHandler");
 const PORT = process.env.PORT || 3000;
 const userRouter = require("./src/routes/user.route.js")
+const propertyRouter=require('./src/routes/propertty.route.js');
 
 connect();
 const app = express();
@@ -26,7 +27,8 @@ app.use(cors({
 
 
 // Routes 
-app.use("/api/users",userRouter)
+app.use("/api/users",userRouter);
+app.use("/api/properties",propertyRouter)
 
 
 
